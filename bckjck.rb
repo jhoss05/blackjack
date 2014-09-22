@@ -9,16 +9,16 @@
   # "Play again?" option. 
 # End loop
 
-def make_board
+def make_board(player_cards, dealer_cards)
   system 'clear'
   puts "= = = = = = = = = = = = = = = = = = ="
   puts "|| Dealer ||"
   puts "- - - - - - - - - - - - - - - - - - -"
-  puts "Cards: #{DEALER_CARDS}"
+  puts "#{card_list(dealer_cards)}"
   puts "= = = = = = = = = = = = = = = = = = ="
   puts "|| #{PLAYER_NAME} ||"
   puts "- - - - - - - - - - - - - - - - - - -"
-  puts "Cards: #{PLAYER_CARDS}"
+  puts "#{card_list(player_cards)}"
   puts "= = = = = = = = = = = = = = = = = = ="
 end
 
@@ -48,38 +48,57 @@ two_decks = {"Ace of Diamonds" => [1, 11], "Two of Diamonds" => 2, "Three of Dia
 "Eight of Clubs2" => 8, "Nine of Clubs2" => 9, "Ten of Clubs2" => 10, "Jack of Clubs2" => 10,
 "Queen of Clubs2" => 10, "King of Clubs2" => 10}
 
-DEALER_CARDS = {}
+
 
 dealer_cards = {}
 
-PLAYER_CARDS = {}
 
-def first_deal 
-  dealer_cards = two_decks.sample
+player_cards = {}
+
+def card_list(deck)
+  deck.each do |key, value|
+    puts "#{key} | #{value}"
+  end
 end
 
 def deal(deck)
-  deck.keys.sample
-  deck.select { |k,v| k == sample }
+  deck.to_a.sample(1).to_h
 end
 
+def first_deal(deck, player_cards, dealer_cards)
+  2.times do 
+    player_cards.merge!(deal(deck))
+    dealer_cards.merge!(deal(deck))
+  end
+end
 
+def player_play(deck, player_cards, dealer_cards)
+  loop do 
+    puts "Hit or Stay? (h/s)"
+    hit_stay = gets.chomp
+    if hit_stay == "h"
+      player_cards.merge!(deal(deck))
+      make_board(player_cards, dealer_cards)
+    elsif hit_stay == "s"
+      break
+    end
+  end
+end
 
+puts card_list(two_decks)
+      
 
+puts "= = = = = = = = = = = = = = = = = = = = = = = ="
+puts "+ + + + Welcome to Justin's Black Jack! + + + +"
+puts "= = = = = = = = = = = = = = = = = = = = = = = ="
+puts "Please enter your name:"
+PLAYER_NAME = gets.chomp
+first_deal(two_decks, player_cards, dealer_cards)
+make_board(player_cards, dealer_cards)
 
+player_play(two_decks, player_cards, dealer_cards)
 
-
-
-
-# puts "= = = = = = = = = = = = = = = = = = = = = = = ="
-# puts "+ + + + Welcome to Justin's Black Jack! + + + +"
-# puts "= = = = = = = = = = = = = = = = = = = = = = = ="
-# puts "Please enter your name:"
-# PLAYER_NAME = gets.chomp
-# make_board
-
-p deal(two_decks)
-
+p player_cards
 
 
 
